@@ -1,5 +1,5 @@
 name: Build APK Android
-on: [push]
+on: [push, workflow_dispatch] # ضفت workflow_dispatch عشان تقدر تشغله يدوي
 
 jobs:
   build:
@@ -15,16 +15,17 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
       - name: Install Buildozer
         run: |
           pip install --upgrade buildozer cython virtualenv
 
       - name: Build the APK
+        # هنا ضفت yes عشان يوافق أوتوماتيك على شروط الأندرويد SDK
         run: |
-          buildozer android debug
+          yes | buildozer android debug
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4
