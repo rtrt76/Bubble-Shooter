@@ -1,0 +1,33 @@
+name: Build APK Android
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+      - name: Install Buildozer
+        run: |
+          pip install --upgrade buildozer cython virtualenv
+
+      - name: Build the APK
+        run: |
+          buildozer android debug
+
+      - name: Upload the APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bubble-Shooter-Omar-APK
+          path: bin/*.apk
